@@ -8,62 +8,64 @@ class DefaultControllerTest extends WebTestCase
 {
     public function testUp() {
       $client = static::createClient();
-      $client->request('GET', '/app/tracker/bananas/3/up');
+      $client->request('GET', '/tracker/bananas/3/up');
 
-      # when no value, default to zero
+      # when no count, default to zero
       $this->assertEquals(
         json_decode($client->getResponse()->getContent(), true),
         array(
           "success" => true,
-          "key" => "bananas",
-          "value" => 3,
+          "name" => "bananas",
+          "count" => 3,
         )
       );
 
-      $client->request('GET', '/app/tracker/bananas/2/up');
+      $client = static::createClient();
+      $client->request('GET', '/tracker/bananas/2/up');
 
-      # when already have a value, modify it.
+      # when already have a count, modify it.
       $this->assertEquals(
         json_decode($client->getResponse()->getContent(), true),
         array(
           "success" => true,
-          "key" => "bananas",
-          "value" => 5,
+          "name" => "bananas",
+          "count" => 5,
         )
       );
     }
 
     public function testDown() {
       $client = static::createClient();
-      $client->request('GET', '/app/tracker/bananas/3/down');
+      $client->request('GET', '/tracker/bananas/3/down');
 
-      # when no value, default to zero
+      # when no count, default to zero
       $this->assertEquals(
         json_decode($client->getResponse()->getContent(), true),
         array(
           "success" => true,
-          "key" => "bananas",
-          "value" => -3,
+          "name" => "bananas",
+          "count" => -3,
         )
       );
 
-      $client->request('GET', '/app/tracker/bananas/2/down');
+      $client = static::createClient();
+      $client->request('GET', '/tracker/bananas/2/down');
 
-      # when already have a value, modify it.
+      # when already have a count, modify it.
       $this->assertEquals(
         json_decode($client->getResponse()->getContent(), true),
         array(
           "success" => true,
-          "key" => "bananas",
-          "value" => -5,
+          "name" => "bananas",
+          "count" => -5,
         )
       );
     }
 
     public function testInvalidDirection() {
       $client = static::createClient();
-      $client->request('GET', '/app/tracker/bananas/3/foo');
-      # when no value, default to zero
+      $client->request('GET', '/tracker/bananas/3/foo');
+
       $this->assertEquals(
         json_decode($client->getResponse()->getContent(), true),
         array(
@@ -76,7 +78,7 @@ class DefaultControllerTest extends WebTestCase
     public function testInvalidCount() {
       $client = static::createClient();
       $client->request('GET', '/app/tracker/bananas/bar/up');
-      # when no value, default to zero
+
       $this->assertEquals(
         json_decode($client->getResponse()->getContent(), true),
         array(
@@ -94,4 +96,5 @@ class DefaultControllerTest extends WebTestCase
     #   Test goofy encodings
     #   Test long string names
     #   Test large counts
+    #   Test negative counts
 }

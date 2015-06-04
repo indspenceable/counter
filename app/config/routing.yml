@@ -1,7 +1,7 @@
 pipeline:
     resource: "@PipelineBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /tracker/
 
 app:
     resource: "@AppBundle/Controller/"
