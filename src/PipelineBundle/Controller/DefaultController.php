@@ -12,15 +12,28 @@ use PipelineBundle\Entity\Thing;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/{name}/{delta}/{direction}", requirements={
-     *  "name" = "[^/]+",
-     *  "delta" = "\d+",
-     *  "direction" = "(up|down)"
-     * })
+     * @Route("/{name}/{delta}/{direction}")
      * @Method({"GET", "POST"})
      */
     public function updateThing($name, $delta, $direction)
     {
+      $response = new JsonResponse();
+
+      if (! preg_match("/\d+/", $delta)) {
+        $response->setData(array(
+          "success" => false,
+          "error" => "invalid count ".$delta,
+        ));
+        return $response;
+      }
+      if (! preg_match("/(up|down)/", $direction)) {
+        $response->setData(array(
+          "success" => false,
+          "error" => "invalid direction ".$direction,
+        ));
+        return $response;
+      }
+
       $thing = $this->ensureThingExistsAndFetch($name);
 
       if ($direction == "up") {

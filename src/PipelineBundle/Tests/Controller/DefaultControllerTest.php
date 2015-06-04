@@ -55,7 +55,7 @@ class DefaultControllerTest extends WebTestCase
 
   public function testDown() {
     $client = static::createClient();
-    $client->request('GET', '/tracker/bananas/3/down');
+    $client->request('GET', '/tracker/bananas/4/down');
 
     # when no count, default to zero
     $this->assertEquals(
@@ -63,12 +63,12 @@ class DefaultControllerTest extends WebTestCase
       array(
         "success" => true,
         "name" => "bananas",
-        "count" => -3,
+        "count" => -4,
       )
     );
 
     $client = static::createClient();
-    $client->request('GET', '/tracker/bananas/2/down');
+    $client->request('GET', '/tracker/bananas/5/down');
 
     # when already have a count, modify it.
     $this->assertEquals(
@@ -76,7 +76,7 @@ class DefaultControllerTest extends WebTestCase
       array(
         "success" => true,
         "name" => "bananas",
-        "count" => -5,
+        "count" => -9,
       )
     );
   }
@@ -96,7 +96,7 @@ class DefaultControllerTest extends WebTestCase
 
   public function testInvalidCount() {
     $client = static::createClient();
-    $client->request('GET', '/app/tracker/bananas/bar/up');
+    $client->request('GET', '/tracker/bananas/bar/up');
 
     $this->assertEquals(
       json_decode($client->getResponse()->getContent(), true),
