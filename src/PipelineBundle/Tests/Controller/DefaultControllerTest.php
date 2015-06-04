@@ -90,4 +90,8 @@ class DefaultControllerTest extends WebTestCase
       # TODO
     }
 
+    # TODO:
+    #   Test goofy encodings
+    #   Test long string names
+    #   Test large counts
 }

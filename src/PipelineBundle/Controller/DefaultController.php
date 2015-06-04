@@ -9,11 +9,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/{thing}/{delta}/{direction}")
-     * @Template()
+     * @Route("/{thing}/{delta}/{direction}", requirements={"id" = "\d+"})
+     * @Method({"GET", "POST"})
      */
-    public function indexAction($name)
+    public function updateThing($thing, $delta, $direction)
     {
-        return array('name' => $name);
+
+    }
+
+    private function ensureThingExists($thing) {
+
     }
 }
