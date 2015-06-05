@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use PipelineBundle\Entity\Thing;
+use PipelineBundle\PipelineUpdateEvent;
 
 class DefaultController extends Controller
 {
@@ -19,6 +20,7 @@ class DefaultController extends Controller
     {
       $response = new JsonResponse();
 
+      # Check constraints
       if (! preg_match("/\d+/", $delta)) {
         $response->setData(array(
           "success" => false,
@@ -34,8 +36,11 @@ class DefaultController extends Controller
         return $response;
       }
 
+      # fetch from the database
       $thing = $this->ensureThingExistsAndFetch($name);
+      $startingCount = $thing->getCount();
 
+      # alter the object
       if ($direction == "up") {
         $thing->setCount($thing->getCount() + intval($delta));
       } else {
@@ -43,7 +48,14 @@ class DefaultController extends Controller
         $thing->setCount($thing->getCount() - intval($delta));
       }
 
+      #dispatch an event of start to finish.
+
+      $eventDispatcher = $this->get('event_dispatcher');
+      $eventDispatcher->dispatch('pipeline.update', new PipelineUpdateEvent());
+
+
       $em = $this->getDoctrine()->getManager();
+      # in case it's new, persist.
       $em->persist($thing);
       $em->flush();
 

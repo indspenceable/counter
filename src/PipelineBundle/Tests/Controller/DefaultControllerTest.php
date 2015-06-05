@@ -3,6 +3,8 @@
 namespace PipelineBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PipelineBundle\PipelineUpdateEvent;
+
 
 class DefaultControllerTest extends WebTestCase
 {
@@ -108,7 +110,17 @@ class DefaultControllerTest extends WebTestCase
   }
 
   public function testEvents() {
-    # TODO
+    $mockDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+    static::$kernel->getContainer()->set('event_dispatcher', $mockDispatcher);
+
+    # This doens't work. Wtf.
+    // $mockDispatcher
+    //   ->expects($this->once())
+    //   ->method('dispatch')
+    //   ->with($this->equalTo('something'), $this->isInstanceOf('PipelineUpdateEvent'));
+
+    $client = static::createClient();
+    $client->request('GET', '/tracker/bananas/3/up');
   }
 
   # TODO:
