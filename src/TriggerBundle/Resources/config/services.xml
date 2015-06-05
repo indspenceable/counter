@@ -4,6 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <services>
+        <service id="kernel.listener.trigger_listener" class="TriggerBundle\EventListener\TriggerListener">
+            <tag name="kernel.event_listener" event="pipeline.update" method="checkBananasCount" />
+            <tag name="kernel.event_listener" event="pipeline.update" method="checkMessagesCount" />
+        </service>
+    </services>
+
     <!--
     <services>
         <service id="trigger.example" class="TriggerBundle\Example">
