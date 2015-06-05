@@ -4,6 +4,8 @@ parameters:
 #    parameter_name: value
 
 services:
+  pipeline_event_dispatcher:
+    class: Symfony\Component\EventDispatcher\EventDispatcher
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

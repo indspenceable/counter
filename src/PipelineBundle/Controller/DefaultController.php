@@ -40,6 +40,8 @@ class DefaultController extends Controller
       $thing = $this->ensureThingExistsAndFetch($name);
       $startingCount = $thing->getCount();
 
+
+      $event = new PipelineUpdateEvent($thing->getName(), $thing->getCount());
       # alter the object
       if ($direction == "up") {
         $thing->setCount($thing->getCount() + intval($delta));
@@ -47,11 +49,11 @@ class DefaultController extends Controller
         # direction == down
         $thing->setCount($thing->getCount() - intval($delta));
       }
+      $event->setEndCount($thing->getCount());
 
       #dispatch an event of start to finish.
-
-      $eventDispatcher = $this->get('event_dispatcher');
-      $eventDispatcher->dispatch('pipeline.update', new PipelineUpdateEvent());
+      $eventDispatcher = $this->container->get('pipeline_event_dispatcher');
+      $eventDispatcher->dispatch('pipeline.update', $event);
 
 
       $em = $this->getDoctrine()->getManager();

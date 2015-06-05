@@ -110,17 +110,34 @@ class DefaultControllerTest extends WebTestCase
   }
 
   public function testEvents() {
-    $mockDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-    static::$kernel->getContainer()->set('event_dispatcher', $mockDispatcher);
-
-    # This doens't work. Wtf.
-    // $mockDispatcher
-    //   ->expects($this->once())
-    //   ->method('dispatch')
-    //   ->with($this->equalTo('something'), $this->isInstanceOf('PipelineUpdateEvent'));
-
     $client = static::createClient();
+
+    # Well. This is awesome.
+    # http://stackoverflow.com/questions/8040296/mocking-concrete-method-in-abstract-class-using-phpunit
+    # JK that doesn't work....
+    # http://stackoverflow.com/questions/15341623/symfony-2-functional-tests-with-mocked-services
+    # says this general flow (create client, stick the mock into the clients container)
+    #
+    #
+    #
+    # FML. Symfony internal services can't be mocked. It just doesn't work. No documentation anywhere.
+
+    $mockDispatcher = $this
+      ->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
+      ->setMethods(array('dispatch'))
+      ->getMock();
+
+    $client->getContainer()->set('pipeline_event_dispatcher', $mockDispatcher);
+
+    $mockDispatcher
+      ->expects($this->once())
+      ->method('dispatch')
+      ->with($this->equalTo('pipeline.update'), $this->isInstanceOf('PipelineBundle\PipelineUpdateEvent'));
+
+
+
     $client->request('GET', '/tracker/bananas/3/up');
+    // echo $client->getResponse()->getContent();
   }
 
   # TODO:
