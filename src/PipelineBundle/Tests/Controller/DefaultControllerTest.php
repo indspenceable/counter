@@ -55,6 +55,21 @@ class DefaultControllerTest extends WebTestCase
     );
   }
 
+  public function testNegativeCount() {
+    $client = static::createClient();
+    $client->request('GET', '/tracker/bananas/-3/up');
+
+    # when no count, default to zero
+    $this->assertEquals(
+      json_decode($client->getResponse()->getContent(), true),
+      array(
+        "success" => true,
+        "name" => "bananas",
+        "count" => -3,
+      )
+    );
+  }
+
   public function testDown() {
     $client = static::createClient();
     $client->request('GET', '/tracker/bananas/4/down');
@@ -112,19 +127,6 @@ class DefaultControllerTest extends WebTestCase
   public function testEvents() {
     $client = static::createClient();
 
-    # Well. This is awesome.
-    # http://stackoverflow.com/questions/8040296/mocking-concrete-method-in-abstract-class-using-phpunit
-    # JK that doesn't work....
-    # http://stackoverflow.com/questions/15341623/symfony-2-functional-tests-with-mocked-services
-    # says this general flow (create client, stick the mock into the clients container)
-    #
-    # FML. Symfony internal services can't be mocked. It just doesn't work. No documentation anywhere.
-
-    // $mockDispatcher = $this
-    //   ->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
-    //   ->setMethods(array('dispatch'))
-    //   ->getMock();
-
     $mockListener = $this
       ->getMockBuilder('stdClass')
       ->setMethods(array('trigger'))
@@ -144,12 +146,8 @@ class DefaultControllerTest extends WebTestCase
 
 
     $client->request('GET', '/tracker/bananas/3/up');
-    // echo $client->getResponse()->getContent();
   }
 
   # TODO:
   #   Test goofy encodings
-  #   Test long string names
-  #   Test large counts
-  #   Test negative counts
 }
