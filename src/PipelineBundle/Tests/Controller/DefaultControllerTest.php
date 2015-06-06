@@ -118,21 +118,28 @@ class DefaultControllerTest extends WebTestCase
     # http://stackoverflow.com/questions/15341623/symfony-2-functional-tests-with-mocked-services
     # says this general flow (create client, stick the mock into the clients container)
     #
-    #
-    #
     # FML. Symfony internal services can't be mocked. It just doesn't work. No documentation anywhere.
 
-    $mockDispatcher = $this
-      ->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
-      ->setMethods(array('dispatch'))
+    // $mockDispatcher = $this
+    //   ->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
+    //   ->setMethods(array('dispatch'))
+    //   ->getMock();
+
+    $mockListener = $this
+      ->getMockBuilder('stdClass')
+      ->setMethods(array('trigger'))
       ->getMock();
 
-    $client->getContainer()->set('pipeline_event_dispatcher', $mockDispatcher);
+    $dispatcher = $client
+      ->getContainer()
+      ->get('event_dispatcher');
 
-    $mockDispatcher
+    $dispatcher->addListener('pipeline.update', array($mockListener, 'trigger'));
+
+    $mockListener
       ->expects($this->once())
-      ->method('dispatch')
-      ->with($this->equalTo('pipeline.update'), $this->isInstanceOf('PipelineBundle\PipelineUpdateEvent'));
+      ->method('trigger')
+      ->with($this->isInstanceOf('PipelineBundle\PipelineUpdateEvent'));
 
 
 

@@ -6,6 +6,8 @@
 
     <services>
         <service id="kernel.listener.trigger_listener" class="TriggerBundle\EventListener\TriggerListener">
+            <argument type="service" id="twig" />
+            <argument type="service" id="mailer" />
             <tag name="kernel.event_listener" event="pipeline.update" method="checkBananasCount" />
             <tag name="kernel.event_listener" event="pipeline.update" method="checkMessagesCount" />
         </service>

@@ -52,7 +52,7 @@ class DefaultController extends Controller
       $event->setEndCount($thing->getCount());
 
       #dispatch an event of start to finish.
-      $eventDispatcher = $this->container->get('pipeline_event_dispatcher');
+      $eventDispatcher = $this->container->get('event_dispatcher');
       $eventDispatcher->dispatch('pipeline.update', $event);
 
 
